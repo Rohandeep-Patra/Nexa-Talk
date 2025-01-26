@@ -27,23 +27,21 @@ const MobileNav = () => {
             className=" cursor-pointer sm:hidden"
           />
         </SheetTrigger>
-        <SheetContent side="left" className=" border-none bg-dark-1">
+        <SheetContent side="left" className=" border-none bg-dark-1 [&>button]:text-white">
           <Link href="/" className=" flex items-center gap-1">
             <Image
-              src="/icons/logo.svg"
-              width={34}
-              height={34}
-              alt="Streamify"
-              className="max-sm:size-10"
+              src="/icons/nexatalk.png"
+              width={200}
+              height={200}
+              alt="NexaTalk"
+              className=" h-[45px] w-[220px]"
             />
-            <p className="text-[26px] font-extrabold text-white ">Streamify</p>
           </Link>
           <div className="flex h-[calc(100vh-72px)] flex-col justify-between overflow-y-auto">
             <SheetClose asChild>
               <section className=" flex h-full flex-col gap-6 pt-16 text-white">
                 {sidebarLinks.map((link) => {
-                  const isActive =
-                    pathName === link.route;
+                  const isActive = pathName === link.route;
                   return (
                     <SheetClose asChild key={link.route}>
                       <Link
