@@ -7,11 +7,9 @@ import { useGetCalls } from "@/hooks/useGetCalls";
 import MeetingCard from "./MeetingCard";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
 
 const CallList = ({ type }: { type: "ended" | "upcoming" | "recordings" }) => {
   const router = useRouter();
-  const { toast } = useToast();
   const { endedCalls, upcomingCalls, callRecordings, isLoading } =
     useGetCalls();
   const [recordings, setRecordings] = useState<CallRecording[]>([]);
@@ -44,30 +42,21 @@ const CallList = ({ type }: { type: "ended" | "upcoming" | "recordings" }) => {
 
   useEffect(() => {
     const fetchRecordings = async () => {
-      try {
-        const callData = await Promise.all(
-          callRecordings?.map((meeting) => meeting.queryRecordings()) ?? []
-        );
+      const callData = await Promise.all(
+        callRecordings?.map((meeting) => meeting.queryRecordings()) ?? []
+      );
 
-        const recordings = callData
-          .filter((call) => call.recordings.length > 0)
-          .flatMap((call) => call.recordings);
+      const recordings = callData
+        .filter((call) => call.recordings.length > 0)
+        .flatMap((call) => call.recordings);
 
-        setRecordings(recordings);
-      } catch (error) {
-        console.log(error)
-        toast({
-          title: "Error fetching recordings",
-          description: "Please try again later",
-          variant: "destructive",
-        });
-      }
+      setRecordings(recordings);
     };
 
     if (type === "recordings") {
       fetchRecordings();
     }
-  }, [type, callRecordings, toast]);
+  }, [type, callRecordings]);
 
   if (isLoading) return <Loader />;
 
@@ -79,11 +68,7 @@ const CallList = ({ type }: { type: "ended" | "upcoming" | "recordings" }) => {
       {calls && calls.length > 0 ? (
         calls.map((meeting: Call | CallRecording) => (
           <MeetingCard
-            key={
-              type === "recordings"
-                ? (meeting as CallRecording).url // Use url instead of id for recordings
-                : (meeting as Call).id
-            }
+            key={(meeting as Call).id}
             icon={
               type === "ended"
                 ? "/icons/previous.svg"
@@ -92,20 +77,13 @@ const CallList = ({ type }: { type: "ended" | "upcoming" | "recordings" }) => {
                 : "/icons/recordings.svg"
             }
             title={
-              type === "recordings"
-                ? (meeting as CallRecording).filename?.substring(0, 20) ||
-                  "No Description"
-                : (meeting as Call).state?.custom?.description?.substring(
-                    0,
-                    20
-                  ) || "Personal Meeting"
+              (meeting as Call).state?.custom?.description ||
+              (meeting as CallRecording).filename?.substring(0, 20) ||
+              "No Description"
             }
             date={
-              type === "recordings"
-                ? new Date(
-                    (meeting as CallRecording).start_time
-                  ).toLocaleString() || ""
-                : (meeting as Call).state?.startsAt?.toLocaleString() || ""
+              (meeting as Call).state?.startsAt?.toLocaleString() ||
+              (meeting as CallRecording).start_time?.toLocaleString()
             }
             isPreviousMeeting={type === "ended"}
             link={
@@ -119,7 +97,7 @@ const CallList = ({ type }: { type: "ended" | "upcoming" | "recordings" }) => {
             buttonText={type === "recordings" ? "Play" : "Start"}
             handleClick={
               type === "recordings"
-                ? () => router.push((meeting as CallRecording).url)
+                ? () => router.push(`${(meeting as CallRecording).url}`)
                 : () => router.push(`/meeting/${(meeting as Call).id}`)
             }
           />
