@@ -55,6 +55,7 @@ const CallList = ({ type }: { type: "ended" | "upcoming" | "recordings" }) => {
 
         setRecordings(recordings);
       } catch (error) {
+        console.log(error)
         toast({
           title: "Error fetching recordings",
           description: "Please try again later",
