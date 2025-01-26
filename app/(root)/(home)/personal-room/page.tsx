@@ -28,7 +28,7 @@ const Table = ({
 const PersonalRoom = () => {
   const { user } = useUser();
   const meetingId = user?.id;
-  const meetingLink = `${process.env.NEXT_PUBLIC_BASE_URL}/meeting/${meetingId}?personal=true`;
+  const meetingLink = `https://${process.env.NEXT_PUBLIC_BASE_URL}/meeting/${meetingId}?personal=true`;
   const { toast } = useToast();
   const {call} = useGetCallById(meetingId!);
   const client = useStreamVideoClient();
