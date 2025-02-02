@@ -107,7 +107,7 @@ const CallList = ({ type }: { type: "ended" | "upcoming" | "recordings" }) => {
             buttonText={type === "recordings" ? "Play" : "Start"}
             handleClick={
               type === "recordings" && 'url' in meeting
-                ? () => router.push(meeting.url)
+                ? () => window.open(meeting.url, '_blank')
                 : () => 'id' in meeting && router.push(`/meeting/${meeting.id}`)
             }
           />
